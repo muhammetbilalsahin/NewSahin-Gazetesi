@@ -94,7 +94,7 @@ async function fetchNews() {
   url.searchParams.append("apiKey", API_KEY);
 
   try {
-    const res = await fetch(url.href);
+    const res = await fetch(url);
     const data = await res.json();
 
     if (
@@ -115,7 +115,7 @@ async function fetchNews() {
       backupUrl.searchParams.append("page", currentPage);
       backupUrl.searchParams.append("apiKey", API_KEY);
 
-      const backupRes = await fetch(backupUrl);
+      const backupRes = await fetch(backupUrl.toString());
       const backupData = await backupRes.json();
 
       if (backupData.status === "ok" && backupData.totalResults > 0) {
@@ -143,6 +143,7 @@ async function fetchNews() {
     paginationContainer.innerHTML = "";
   }
 }
+
 // Yedek anahtar kelime belirleme fonksiyonu
 function getBackupKeyword(category) {
   const map = {
