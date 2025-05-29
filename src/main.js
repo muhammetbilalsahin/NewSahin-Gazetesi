@@ -94,7 +94,7 @@ async function fetchNews() {
   url.searchParams.append("apiKey", API_KEY);
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url.href);
     const data = await res.json();
 
     if (
