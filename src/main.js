@@ -1,5 +1,3 @@
-const url ="newsapi.org/v2/everything?q=Apple&from=2025-05-29&sortBy=popularity&apiKey=API_KEY"
-
 const API_KEY = "1a9c2c3d0161409d90664db4ec9aec3f";
 const PAGE_SIZE = 10;
 // HTML element referansları
