@@ -74,8 +74,8 @@ async function fetchNews() {
 
   let url = new URL(
     isSearch
-      ? "https://newsapi.org/v2/everything"
-      : "https://newsapi.org/v2/top-headlines"
+      ? "http://newsapi.org/v2/everything"
+      : "http://newsapi.org/v2/top-headlines"
   );
 
   if (isSearch) {
@@ -104,7 +104,7 @@ async function fetchNews() {
       currentCountry
     ) {
       const backupQuery = getBackupKeyword(currentCategory);
-      const backupUrl = new URL("https://newsapi.org/v2/everything");
+      const backupUrl = new URL("http://newsapi.org/v2/everything");
       backupUrl.searchParams.append("q", backupQuery);
       backupUrl.searchParams.append(
         "language",
