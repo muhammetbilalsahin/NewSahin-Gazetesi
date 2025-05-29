@@ -74,8 +74,8 @@ async function fetchNews() {
 
   let url = new URL(
     isSearch
-      ? "http://newsapi.org/v2/everything"
-      : "http://newsapi.org/v2/top-headlines"
+      ? "https://newsapi.org/v2/everything"
+      : "https://newsapi.org/v2/top-headlines"
   );
 
   if (isSearch) {
