@@ -66,83 +66,87 @@ searchInput.addEventListener("keydown", (e) => {
 });
 // İlk yükleme
 async function fetchNews() {
-  newsContainer.innerHTML = "<p>Yükleniyor...</p>";
-  paginationContainer.innerHTML = "";
+    newsContainer.innerHTML = "<p>Yükleniyor...</p>";
+      paginationContainer.innerHTML = "";
 
-  const trimmedQuery = currentQuery.trim();
-  const isSearch = Boolean(trimmedQuery);
+        const trimmedQuery = currentQuery.trim();
+          const isSearch = Boolean(trimmedQuery);
 
-  let url = new URL(
-    isSearch
-      ? "https://newsapi.org/v2/everything"
-      : "https://newsapi.org/v2/top-headlines"
-  );
+            let url = new URL(
+                isSearch
+                      ? "https://newsapi.org/v2/everything"
+                            : "https://newsapi.org/v2/top-headlines"
+                              );
 
-  if (isSearch) {
-    url.searchParams.append("q", trimmedQuery);
-    url.searchParams.append("language", getLangFromCountry(currentCountry));
-    url.searchParams.append("sortBy", "publishedAt");
-  } else {
-    url.searchParams.append("country", currentCountry);
-    if (currentCategory) {
-      url.searchParams.append("category", currentCategory);
-    }
-  }
+                                if (isSearch) {
+                                    url.searchParams.append("q", trimmedQuery);
+                                        url.searchParams.append("language", getLangFromCountry(currentCountry));
+                                            url.searchParams.append("sortBy", "publishedAt");
+                                              } else {
+                                                  url.searchParams.append("country", currentCountry);
+                                                      if (currentCategory) {
+                                                            url.searchParams.append("category", currentCategory);
+                                                                }
+                                                                  }
 
-  url.searchParams.append("pageSize", PAGE_SIZE);
-  url.searchParams.append("page", currentPage);
-  url.searchParams.append("apiKey", API_KEY);
+                                                                    url.searchParams.append("pageSize", PAGE_SIZE);
+                                                                      url.searchParams.append("page", currentPage);
+                                                                        url.searchParams.append("apiKey", API_KEY);
 
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
+                                                                          try {
+                                                                              // Burada url objesini string yapıyoruz:
+                                                                                  const res = await fetch(url.toString());
+                                                                                      const data = await res.json();
 
-    if (
-      !isSearch &&
-      data.status === "ok" &&
-      data.totalResults === 0 &&
-      currentCountry
-    ) {
-      const backupQuery = getBackupKeyword(currentCategory);
-      const backupUrl = new URL("http://newsapi.org/v2/everything");
-      backupUrl.searchParams.append("q", backupQuery);
-      backupUrl.searchParams.append(
-        "language",
-        getLangFromCountry(currentCountry)
-      );
-      backupUrl.searchParams.append("sortBy", "publishedAt");
-      backupUrl.searchParams.append("pageSize", PAGE_SIZE);
-      backupUrl.searchParams.append("page", currentPage);
-      backupUrl.searchParams.append("apiKey", API_KEY);
+                                                                                          if (
+                                                                                                !isSearch &&
+                                                                                                      data.status === "ok" &&
+                                                                                                            data.totalResults === 0 &&
+                                                                                                                  currentCountry
+                                                                                                                      ) {
+                                                                                                                            const backupQuery = getBackupKeyword(currentCategory);
+                                                                                                                                  const backupUrl = new URL("http://newsapi.org/v2/everything");
+                                                                                                                                        backupUrl.searchParams.append("q", backupQuery);
+                                                                                                                                              backupUrl.searchParams.append(
+                                                                                                                                                      "language",
+                                                                                                                                                              getLangFromCountry(currentCountry)
+                                                                                                                                                                    );
+                                                                                                                                                                          backupUrl.searchParams.append("sortBy", "publishedAt");
+                                                                                                                                                                                backupUrl.searchParams.append("pageSize", PAGE_SIZE);
+                                                                                                                                                                                      backupUrl.searchParams.append("page", currentPage);
+                                                                                                                                                                                            backupUrl.searchParams.append("apiKey", API_KEY);
 
-      const backupRes = await fetch(backupUrl);
-      const backupData = await backupRes.json();
+                                                                                                                                                                                                  const backupRes = await fetch(backupUrl.toString());
+                                                                                                                                                                                                        const backupData = await backupRes.json();
 
-      if (backupData.status === "ok" && backupData.totalResults > 0) {
-        totalResults = backupData.totalResults;
-        displayNews(backupData.articles);
-        setupPagination();
-        return;
-      }
-    }
+                                                                                                                                                                                                              if (backupData.status === "ok" && backupData.totalResults > 0) {
+                                                                                                                                                                                                                      totalResults = backupData.totalResults;
+                                                                                                                                                                                                                              displayNews(backupData.articles);
+                                                                                                                                                                                                                                      setupPagination();
+                                                                                                                                                                                                                                              return;
+                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                        }
 
-    if (data.status !== "ok")
-      throw new Error(data.message || "Bilinmeyen API hatası");
+                                                                                                                                                                                                                                                            if (data.status !== "ok")
+                                                                                                                                                                                                                                                                  throw new Error(data.message || "Bilinmeyen API hatası");
 
-    totalResults = data.totalResults;
+                                                                                                                                                                                                                                                                      totalResults = data.totalResults;
 
-    if (totalResults === 0) {
-      newsContainer.innerHTML = `<p style="color:red;">Hiç haber bulunamadı.</p>`;
-      return;
-    }
+                                                                                                                                                                                                                                                                          if (totalResults === 0) {
+                                                                                                                                                                                                                                                                                newsContainer.innerHTML = `<p style="color:red;">Hiç haber bulunamadı.</p>`;
+                                                                                                                                                                                                                                                                                      return;
+                                                                                                                                                                                                                                                                                          }
 
-    displayNews(data.articles);
-    setupPagination();
-  } catch (error) {
-    newsContainer.innerHTML = `<p style="color:red;">${error.message}</p>`;
-    paginationContainer.innerHTML = "";
-  }
-}
+                                                                                                                                                                                                                                                                                              displayNews(data.articles);
+                                                                                                                                                                                                                                                                                                  setupPagination();
+                                                                                                                                                                                                                                                                                                    } catch (error) {
+                                                                                                                                                                                                                                                                                                        newsContainer.innerHTML = `<p style="color:red;">${error.message}</p>`;
+                                                                                                                                                                                                                                                                                                            paginationContainer.innerHTML = "";
+                                                                                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                                                                                              }
+
+
+
 // Yedek anahtar kelime belirleme fonksiyonu
 function getBackupKeyword(category) {
   const map = {
