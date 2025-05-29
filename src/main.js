@@ -95,7 +95,7 @@ async function fetchNews() {
 
                                                                           try {
                                                                               // Burada url objesini string yapıyoruz:
-                                                                                  const res = await fetch(url.toString());
+                                                                                  const res = await fetch(URL.toString());
                                                                                       const data = await res.json();
 
                                                                                           if (
