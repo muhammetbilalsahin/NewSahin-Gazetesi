@@ -1,0 +1,103 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 1rem;
+  background-color: rgb(43, 28, 28);
+  color: black;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: #000000;
+  color: #0f0808;
+}
+
+header {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+h1 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: rgb(207, 26, 26);
+}
+header p {
+  color: #f0e8e8;
+  font-size: 1.2rem;
+}
+select,
+input[type="text"],
+button {
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+}
+
+#news {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+article {
+  border: 1px solid #f0e8e8;
+  border-radius: 6px;
+  padding: 1rem;
+  background: #e6e0e0;
+  transition: background-color 0.3s;
+}
+
+body.dark article {
+  background: #1e1e1e;
+  border-color: #444;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+#pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+#pagination button {
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+#darkModeToggle {
+  position: relative;
+
+  background-color: #252729;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+}
+footer {
+  background-color: #aaa8a8;
+  padding-bottom: 1rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.dark footer {
+  background-color: #1a1a1a;
+}
+
+footer .copyright {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark footer .copyright {
+  color: #aaa;
+}

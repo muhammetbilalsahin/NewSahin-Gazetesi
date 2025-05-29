@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Haber Uygulaması</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>NEWSAHİN GAZETESİ</h1>
+    <br>
+    <br>
+    <br>
+    <p>Dünyadan en son haberler.📰</p>
+    </p>
+
+  </header>
+  <main>
+    <select id="countrySelect">
+      <option value="tr">Türkiye</option>
+      <option value="us">Amerika</option>
+      <option value="gb">İngiltere</option>
+      <option value="de">Almanya</option>
+      <option value="fr">Fransa</option>
+    </select>
+
+    <select id="categorySelect" aria-label="Kategori seçimi">
+      <option value="">Tüm Kategoriler</option>
+      <option value="business">İş</option>
+      <option value="entertainment">Eğlence</option>
+      <option value="general" selected>Genel</option>
+      <option value="health">Sağlık</option>
+      <option value="science">Bilim</option>
+      <option value="sports">Spor</option>
+      <option value="technology">Teknoloji</option>
+    </select>
+
+    <input type="text" id="searchInput" placeholder="Haber ara..." aria-label="Haber arama" />
+    <button id="searchBtn">Ara</button>
+
+    <button id="darkModeToggle">'🌙</button>
+  </main>
+  <br>
+  <br>
+
+  <div id="news" aria-live="polite" aria-atomic="true"></div>
+  <nav id="pagination" aria-label="Sayfa numaraları"></nav>
+
+  <footer>
+    <div id="news" aria-live="polite" aria-atomic="true"></div>
+    <nav id="pagination" aria-label="Sayfa numaraları"></nav>
+    <p class="copyright">© 2025 Muhammet Bilal Şahin. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
