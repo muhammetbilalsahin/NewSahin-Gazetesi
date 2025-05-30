@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin: 1rem;
-  background-color: rgb(43, 28, 28);
+  background-color: rgb(180, 173, 164);
   color: black;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -23,7 +23,7 @@ h1 {
   color: rgb(207, 26, 26);
 }
 header p {
-  color: #f0e8e8;
+  color: #333;
   font-size: 1.2rem;
 }
 select,

@@ -1,11 +1,7 @@
-// vite.config.js
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  server: {
-    open: true,
-    port: 3000,
-  },
+  base: "/NewSahin-Gazetesi/",
   build: {
     outDir: "dist",
     emptyOutDir: true,
