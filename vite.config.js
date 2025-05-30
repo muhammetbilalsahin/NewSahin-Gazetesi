@@ -1,14 +1,13 @@
+// vite.config.js
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/NewSahin-Gazetesi/",
-
   server: {
-    open: true, // Proje çalışınca tarayıcıda otomatik açılır
-    port: 3000, // Geliştirme sunucusu portu
+    open: true,
+    port: 3000,
   },
   build: {
-    outDir: "dist", // Üretim çıktılarının dizini
-    emptyOutDir: true, // Derleme öncesinde klasörü temizler
+    outDir: "dist",
+    emptyOutDir: true,
   },
 });
