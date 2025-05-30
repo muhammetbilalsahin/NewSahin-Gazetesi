@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/NewSahin-Gazetesi",
+  base: "/NewSahin-Gazetesi/",
 
   server: {
     open: true, // Proje çalışınca tarayıcıda otomatik açılır
