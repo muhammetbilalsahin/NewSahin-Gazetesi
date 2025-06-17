@@ -1,4 +1,4 @@
-const API_KEY = "1a9c2c3d0161409d90664db4ec9aec3f";
+const API_KEY = "d5bacaddfa9ef9eb2bf8c7d681869330";
 const PAGE_SIZE = 10;
 // HTML element referansları
 const newsContainer = document.getElementById("news");
