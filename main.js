@@ -1,6 +1,7 @@
 const API_KEY = "d5bacaddfa9ef9eb2bf8c7d681869330";
 const PAGE_SIZE = 10;
-// HTML element referansları
+
+// HTML referansları
 const newsContainer = document.getElementById("news");
 const paginationContainer = document.getElementById("pagination");
 const countrySelect = document.getElementById("countrySelect");
@@ -14,7 +15,8 @@ let totalResults = 0;
 let currentQuery = "";
 let currentCountry = countrySelect.value;
 let currentCategory = categorySelect.value;
-// Karanlık modun yüklenmesi
+
+// Tema yükleme
 function loadTheme() {
   const theme = localStorage.getItem("theme");
   if (theme === "dark") {
@@ -25,18 +27,16 @@ function loadTheme() {
     darkModeToggle.textContent = "🌙";
   }
 }
-// Karanlık mod butonuna tıklama olayını dinleme
+
+// Tema değiştirme
 darkModeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
-  if (document.body.classList.contains("dark")) {
-    darkModeToggle.textContent = "☀️";
-    localStorage.setItem("theme", "dark");
-  } else {
-    darkModeToggle.textContent = "🌙";
-    localStorage.setItem("theme", "light");
-  }
+  const newTheme = document.body.classList.contains("dark") ? "dark" : "light";
+  localStorage.setItem("theme", newTheme);
+  darkModeToggle.textContent = newTheme === "dark" ? "☀️" : "🌙";
 });
-// Sayfalama butonlarına tıklama olayını dinleme
+
+// Sayfalama tıklama
 paginationContainer.addEventListener("click", (e) => {
   if (e.target.tagName === "BUTTON") {
     const page = Number(e.target.dataset.page);
@@ -47,7 +47,8 @@ paginationContainer.addEventListener("click", (e) => {
     }
   }
 });
-// Ülke ve kategori seçimlerini resetleyip haberleri yeniden yükleme
+
+// Arama ve filtreleri resetle
 function resetAndFetch() {
   currentPage = 1;
   currentCountry = countrySelect.value;
@@ -64,140 +65,66 @@ searchInput.addEventListener("keydown", (e) => {
     resetAndFetch();
   }
 });
-// İlk yükleme
+
+// Ana veri çekme fonksiyonu
 async function fetchNews() {
   newsContainer.innerHTML = "<p>Yükleniyor...</p>";
   paginationContainer.innerHTML = "";
 
   const trimmedQuery = currentQuery.trim();
-  const isSearch = Boolean(trimmedQuery);
+  const url = new URL("https://api.mediastack.com/v1/news");
 
-  let url = new URL(
-    isSearch
-      ? "http://api.mediastack.com/v1/news"
-      : "http://api.mediastack.com/v1/sources"
-  );
-
-  if (isSearch) {
-    url.searchParams.append("q", trimmedQuery);
-    url.searchParams.append("language", getLangFromCountry(currentCountry));
-    url.searchParams.append("sortBy", "publishedAt");
+  if (trimmedQuery) {
+    url.searchParams.append("keywords", trimmedQuery);
   } else {
-    url.searchParams.append("country", currentCountry);
-    if (currentCategory) {
-      url.searchParams.append("category", currentCategory);
-    }
+    if (currentCountry) url.searchParams.append("countries", currentCountry);
+    if (currentCategory) url.searchParams.append("categories", currentCategory);
   }
 
-  url.searchParams.append("pageSize", PAGE_SIZE);
-  url.searchParams.append("page", currentPage);
-  url.searchParams.append("apiKey", API_KEY);
+  url.searchParams.append("limit", PAGE_SIZE);
+  url.searchParams.append("offset", (currentPage - 1) * PAGE_SIZE);
+  url.searchParams.append("access_key", API_KEY);
 
   try {
     const res = await fetch(url);
     const data = await res.json();
 
-    if (
-      !isSearch &&
-      data.status === "ok" &&
-      data.totalResults === 0 &&
-      currentCountry
-    ) {
-      const backupQuery = getBackupKeyword(currentCategory);
-      const backupUrl = new URL("http://api.mediastack.com/v1/news");
-      backupUrl.searchParams.append("q", backupQuery);
-      backupUrl.searchParams.append(
-        "language",
-        getLangFromCountry(currentCountry)
-      );
-      backupUrl.searchParams.append("sortBy", "publishedAt");
-      backupUrl.searchParams.append("pageSize", PAGE_SIZE);
-      backupUrl.searchParams.append("page", currentPage);
-      backupUrl.searchParams.append("apiKey", API_KEY);
-
-      const backupRes = await fetch(backupUrl.toString());
-      const backupData = await backupRes.json();
-
-      if (backupData.status === "ok" && backupData.totalResults > 0) {
-        totalResults = backupData.totalResults;
-        displayNews(backupData.articles);
-        setupPagination();
-        return;
-      }
-    }
-
-    if (data.status !== "ok")
-      throw new Error(data.message || "Bilinmeyen API hatası");
-
-    totalResults = data.totalResults;
-
-    if (totalResults === 0) {
+    if (!data || !data.data || data.data.length === 0) {
       newsContainer.innerHTML = `<p style="color:red;">Hiç haber bulunamadı.</p>`;
       return;
     }
 
-    displayNews(data.articles);
+    totalResults = data.pagination.total;
+    displayNews(data.data);
     setupPagination();
   } catch (error) {
     newsContainer.innerHTML = `<p style="color:red;">${error.message}</p>`;
-    paginationContainer.innerHTML = "";
   }
 }
 
-// Yedek anahtar kelime belirleme fonksiyonu
-function getBackupKeyword(category) {
-  const map = {
-    general: "haber",
-    technology: "teknoloji",
-    sports: "spor",
-    health: "sağlık",
-    science: "bilim",
-    business: "ekonomi",
-    entertainment: "magazin",
-  };
-  return map[category] || "haber";
-}
-// Ülke koduna göre dil belirleme fonksiyonu
-function getLangFromCountry(countryCode) {
-  const map = {
-    tr: "tr",
-    gb: "en",
-    us: "en",
-    de: "de",
-    fr: "fr",
-  };
-  return map[countryCode] || "en";
-}
-// Haberleri görüntüleme fonksiyonu
+// Haberleri görüntüleme
 function displayNews(articles) {
   newsContainer.innerHTML = articles
     .map((article) => {
-      const publishedAt = new Date(article.publishedAt).toLocaleString(
-        "tr-TR",
-        {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }
-      );
+      const publishedAt = new Date(article.published_at).toLocaleString("tr-TR", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+
       return `
     <article>
       <h2>${article.title}</h2>
-      ${
-        article.urlToImage
-          ? `<img src="${article.urlToImage}" alt="${article.title}">`
-          : ""
-      }
+      ${article.image ? `<img src="${article.image}" alt="${article.title}" />` : ""}
       <p>${article.description || ""}</p>
       <p><small>Yayınlanma: ${publishedAt}</small></p>
-      <a href="${
-        article.url
-      }" target="_blank" rel="noopener noreferrer">Devamını oku</a>
+      <a href="${article.url}" target="_blank" rel="noopener noreferrer">Devamını oku</a>
     </article>
     `;
     })
     .join("");
 }
-// sayfalama fonksiyonu
+
+// Sayfalama kur
 function setupPagination() {
   paginationContainer.innerHTML = "";
   const totalPages = Math.min(Math.ceil(totalResults / PAGE_SIZE), 50);
@@ -228,11 +155,11 @@ function setupPagination() {
   }
 
   if (endPage < totalPages) {
-    if (endPage < totalPages - 1)
-      paginationContainer.innerHTML += `<span>...</span>`;
+    if (endPage < totalPages - 1) paginationContainer.innerHTML += `<span>...</span>`;
     paginationContainer.innerHTML += `<button data-page="${totalPages}">${totalPages}</button>`;
   }
 }
 
+// Uygulamayı başlat
 loadTheme();
 fetchNews();
